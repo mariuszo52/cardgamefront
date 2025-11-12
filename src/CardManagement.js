@@ -102,12 +102,13 @@ function CardManagement() {
                     fractionsCosts: []
                 });
                 setImageFile(null);
+                setFranctionCost([])
             } else {
                 alert("Wystąpił błąd przy dodawaniu karty.");
             }
         } catch (error) {
             console.error("Błąd:", error);
-            alert("Nie udało się połączyć z serwerem.");
+            alert("Nie udało się połączyć z serwerem." + error.message);
         }
     };
 
