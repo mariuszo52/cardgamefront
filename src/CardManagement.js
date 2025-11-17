@@ -10,11 +10,11 @@ function CardManagement() {
     const [card, setCard] = useState({
         id: "",
         name: "",
+        serialNumber: "",
         rarity: "COMMON",
         description: "",
         attack: "",
         abilitiesIds: [],
-        hasEchoOfMeditation: "false",
         cardType: "SPELL",
         fractionsCosts: []
     });
@@ -81,7 +81,7 @@ function CardManagement() {
         }
 
         try {
-            const response = await axios.post("http://localhost:8080/card", formData, {
+            const response = await axios.post(process.env.REACT_APP_SERVER_URL + "/card", formData, {
                 headers: {
                     "Content-Type": "multipart/form-data",
                 },
@@ -97,7 +97,7 @@ function CardManagement() {
                     description: "",
                     attack: "",
                     abilitiesIds: [],
-                    hasEchoOfMeditation: "false",
+                    serialNumber: "",
                     cardType: "SPELL",
                     fractionsCosts: []
                 });
@@ -134,7 +134,8 @@ function CardManagement() {
         changeType: "MANA",
         changeValue: "",
         changeToValue: "",
-        activeForTurns: ""
+        activeForTurns: "",
+        isMeditation: false
     });
 
     const handleAbilityChange = (e) => {
@@ -146,7 +147,7 @@ function CardManagement() {
         e.preventDefault();
 
         try {
-            const response = await axios.post("http://localhost:8080/ability", ability);
+            const response = await axios.post(process.env.REACT_APP_SERVER_URL + "/ability", ability);
             if (response.status === 201 || response.status === 200) {
                 alert("Dodano umiejętność!");
                 setAbility({
@@ -155,7 +156,8 @@ function CardManagement() {
                     changeType: "MANA",
                     changeValue: "",
                     changeToValue: "",
-                    activeForTurns: ""
+                    activeForTurns: "",
+                    isMeditation: false
                 });
             } else {
                 alert("Wystąpił błąd przy dodawaniu umiejętności.");
@@ -203,6 +205,7 @@ function CardManagement() {
                             <form onSubmit={handleSubmit} style={{display: "grid", gap: 10, maxWidth: 400}}>
                                 <input name="id" placeholder="ID" value={card.id} onChange={handleChange} required/>
                                 <input name="name" placeholder="Nazwa" value={card.name} onChange={handleChange} required/>
+                                <input name="serialNumber" placeholder="Nr seryjny" value={card.serialNumber} onChange={handleChange} required/>
                                 <label htmlFor={"rarity"}>Rzadkość</label>
                                 <select name="rarity" value={card.rarity} onChange={handleChange}>
                                     <option value="COMMON">Zwykła</option>
@@ -264,25 +267,6 @@ function CardManagement() {
                                        required/>
 
                                 <input type="file" accept="image/*" onChange={handleFileChange} required/>
-                                <label>Czy ma echo medytacji</label>
-                                <div className="radio_div">
-                                    <span>Tak</span>
-                                    <input
-                                        type="radio"
-                                        name="hasEchoOfMeditation"
-                                        value="true"
-                                        checked={card.hasEchoOfMeditation === "true"}
-                                        onChange={handleChange}
-                                    />
-                                    <span>Nie</span>
-                                    <input
-                                        type="radio"
-                                        name="hasEchoOfMeditation"
-                                        value="false"
-                                        checked={card.hasEchoOfMeditation === "false"}
-                                        onChange={handleChange}
-                                    />
-                                </div>
 
                                 <button type="submit">Dodaj kartę</button>
                             </form>
@@ -307,9 +291,10 @@ function CardManagement() {
                                         onChange={handleAbilityChange}
                                         required
                                     >
-                                        <option value="MANA">MANA</option>
-                                        <option value="HEALTH">HEALTH</option>
-                                        <option value="ATTACK">ATTACK</option>
+                                        <option value="MANA">Mana</option>
+                                        <option value="HEALTH">Zdrowie</option>
+                                        <option value="ATTACK">Atak</option>
+                                        <option value="PANCER">Pancerz</option>
                                     </select>
 
                                     <input
@@ -320,18 +305,16 @@ function CardManagement() {
                                         min={1}
                                         max={10}
                                         onChange={handleAbilityChange}
-                                        required
                                     />
 
                                     <input
                                         type="number"
                                         name="changeToValue"
-                                        placeholder="Zmień do wartości (1-10)"
+                                        placeholder="Zmień do wartości (0-100)"
                                         value={ability.changeToValue}
-                                        min={1}
-                                        max={10}
+                                        min={0}
+                                        max={100}
                                         onChange={handleAbilityChange}
-                                        required
                                     />
                                     <label>Aktywne przez ile tur</label>
                                     <input
@@ -342,6 +325,25 @@ function CardManagement() {
                                         min={1}
                                         onChange={handleAbilityChange}
                                     />
+                                    <label>Czy ma echo medytacji</label>
+                                    <div className="radio_div">
+                                        <span>Tak</span>
+                                        <input
+                                            type="radio"
+                                            name="isMeditation"
+                                            value="true"
+                                            checked={ability.isMeditation === "true"}
+                                            onChange={handleAbilityChange}
+                                        />
+                                        <span>Nie</span>
+                                        <input
+                                            type="radio"
+                                            name="isMeditation"
+                                            value="false"
+                                            checked={ability.isMeditation === "false"}
+                                            onChange={handleAbilityChange}
+                                        />
+                                    </div>
 
                                     <button type="submit">Dodaj Umiejętność</button>
                                 </form>
