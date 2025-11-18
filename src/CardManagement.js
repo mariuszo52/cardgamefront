@@ -210,13 +210,14 @@ function CardManagement() {
                                 <select name="rarity" value={card.rarity} onChange={handleChange}>
                                     <option value="COMMON">Zwykła</option>
                                     <option value="RARE">Rzadka</option>
+                                    <option value={"EPIC"}>Epicka</option>
                                     <option value="LEGENDARY">Legendarna</option>
                                 </select>
                                 <label>Rodzaj karty</label>
                                 <select
                                     name="cardType"
                                     value={card.cardType}
-                                    onChange={handleAbilityChange}
+                                    onChange={handleChange}
                                     required
                                 >
                                     <option value="SPELL">Zaklęcie</option>
